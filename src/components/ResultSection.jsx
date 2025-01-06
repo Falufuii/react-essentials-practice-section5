@@ -4,34 +4,49 @@ import React from "react";
 export default function ResultSection({ theadTitle, input }) {
   const resultData = calculateInvestmentResults(input);
   const initialInvestment = input.initialInvestment;
+  const isValidValue = input.duration > 0;
 
-  return (
-    <table id="result">
-      <thead>
-        {theadTitle.map((title) => (
-          <th>{title}</th>
-        ))}
-      </thead>
-      <tbody>
-        {resultData.map((item) => {
-          const totalInterest =
-            item.valueEndOfYear -
-            item.annualInvestment * item.year -
-            initialInvestment;
+  return displayResult(isValidValue, theadTitle, resultData, initialInvestment);
+}
 
-          const totalAmountInvested = item.valueEndOfYear - totalInterest;
+function displayResult(
+  isValidValue,
+  theadTitle,
+  resultData,
+  initialInvestment
+) {
+  let result = <p className="center">Please enter duration greater than 0</p>;
 
-          return (
-            <tr key={item.year}>
-              <td>{item.year}</td>
-              <td>{formatter.format(item.valueEndOfYear)}</td>
-              <td>{formatter.format(item.interest)}</td>
-              <td>{formatter.format(totalInterest)}</td>
-              <td>{formatter.format(totalAmountInvested)}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
+  if (isValidValue) {
+    result = (
+      <table id="result">
+        <thead>
+          {theadTitle.map((title) => (
+            <th>{title}</th>
+          ))}
+        </thead>
+        <tbody>
+          {resultData.map((item) => {
+            const totalInterest =
+              item.valueEndOfYear -
+              item.annualInvestment * item.year -
+              initialInvestment;
+
+            const totalAmountInvested = item.valueEndOfYear - totalInterest;
+
+            return (
+              <tr key={item.year}>
+                <td>{item.year}</td>
+                <td>{formatter.format(item.valueEndOfYear)}</td>
+                <td>{formatter.format(item.interest)}</td>
+                <td>{formatter.format(totalInterest)}</td>
+                <td>{formatter.format(totalAmountInvested)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  }
+  return result;
 }
